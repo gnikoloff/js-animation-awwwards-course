@@ -13,5 +13,9 @@ Open your favourite terminal, navigate to the folder where you want to install t
 Alternatively, click the Code button in top right of this page and click on "Download ZIP"
 
 ## Running the project
-To run it, simply navigate to the folder that contains this project, open a terminal and run `npm run start`.
+To run it, simply:
+1. Navigate to the folder that contains this project
+2. Open a terminal
+3. Install the dependencies with `npm install`
+4. Run it with `npm run start`.
 
