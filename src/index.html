@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamically scripted animations with Javascript</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      line-height: 1.8;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    code {
+      font-size: 1.1rem;
+      padding: 0 5px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+    ol {
+      counter-reset: item;
+    }
+    li {
+      display: block;
+      list-style-type: decimal-leading-zero;
+    }
+    li:before {
+      content: counters(item, ".") ". ";
+      counter-increment: item
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h5>This page contains all the samples, excercises, and demo code from</h5>
+    <h1>Dynamically scripted animations with Javascript</h1>
+
+    <a href="https://www.awwwards.com/academy/course/dynamically-scripted-animations-with-javascript">
+      Full Video Course
+    </a>
+
+    <p>
+      In a world full of Javascript libraries, this course will be of great use for people who want to understand it on a deeper level. These animation principles are timeless and can be applied to any environment, such as HTML, SVG or even 3D with WebGL.
+    </p>
+
+    <hr />
+
+    <h2>Table of Contents and Exercises</h2>
+    <p>
+      The source code for each excercise is <a href="https://github.com/gnikoloff/js-animation-awwwards-course">available online</a>, and for a detailed explanation, please consult the video course.
+    </p>
+
+    <ol>
+      <li>Welcome</li>
+      <ol>
+        <li>
+          <a class="exercise-link" href="01-app-boilerplate/start.html">Our basic HTML5 <code>canvas</code> skeleton app</a>
+        </li>
+      </ol>
+    </ol>
+
+  </div>
+
+</body>
+</html>

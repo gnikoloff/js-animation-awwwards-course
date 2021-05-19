@@ -1,0 +1,27 @@
+{
+  "name": "js-animation-awwwards-course",
+  "version": "1.0.0",
+  "description": "Example code for the Dynamic Animation with Javascript AWWWARDS course",
+  "homepage": "https://www.awwwards.com/academy/course/dynamically-scripted-animations-with-javascript",
+  "scripts": {
+    "start": "http-serve ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnikoloff/js-animation-awwwards-course.git"
+  },
+  "keywords": [
+    "canvas2d",
+    "animation",
+    "tweening",
+    "physics"
+  ],
+  "author": "Georgi Nikolov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gnikoloff/js-animation-awwwards-course/issues"
+  },
+  "dependencies": {
+    "http-serve": "^1.0.1"
+  }
+}
