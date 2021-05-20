@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 - App Boilerplate</title>
+  <title>02 - Canvas Rendering Fundamentals</title>
 
   <style>
 
@@ -50,6 +50,8 @@
     image.onload = () => {
       video.onloadeddata = () => {
         video.play()
+        video.muted = true
+        video.setAttribute('muted', '')
         requestAnimationFrame(drawFrame)
       }
       video.src = '/assets/sample-video.mp4'
@@ -59,42 +61,42 @@
     function drawFrame (ts) {
 
       // Clear command
-      ctx.fillRect(450, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Render command
-      ctx.strokeStyle = 'pink'
-      ctx.font = '2rem Helvetica'
-      ctx.strokeText('Lorem Ipsum', 300, 300)
-
-      // ctx.strokeStyle = 'brown'
-
-      // // 1st render command - image
-      // ctx.drawImage(image, 100, 100)
-
-      
-      // // 2nd render command - complex path
-      // ctx.beginPath()
-      // ctx.moveTo(100, 100)
-      // ctx.lineTo(200, 200)
-      // ctx.lineTo(200, 0)
-      // ctx.lineTo(300, 300)
-      // ctx.lineTo(400, 450)
-      // ctx.lineTo(500, 520)
-      // ctx.closePath()
-      // ctx.fill()
-      // ctx.stroke()
-    
-      // // 3rd render command - fill text
-      // ctx.strokeStyle = 'yellow'
-      
+      // // Render command
+      // ctx.strokeStyle = 'pink'
       // ctx.font = '2rem Helvetica'
-      // ctx.fillText('Hello World', 300, 100)
-
-      // // 4th render command - stroke text
       // ctx.strokeText('Lorem Ipsum', 300, 300)
 
-      // // 5th command - draw video
-      // ctx.drawImage(video, 300, 300)
+      ctx.strokeStyle = 'brown'
+
+      // 1st render command - image
+      ctx.drawImage(image, 100, 100)
+
+      
+      // 2nd render command - complex path
+      ctx.beginPath()
+      ctx.moveTo(100, 100)
+      ctx.lineTo(200, 200)
+      ctx.lineTo(200, 0)
+      ctx.lineTo(300, 300)
+      ctx.lineTo(400, 450)
+      ctx.lineTo(500, 520)
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+    
+      // 3rd render command - fill text
+      ctx.strokeStyle = 'yellow'
+      
+      ctx.font = '2rem Helvetica'
+      ctx.fillText('Hello World', 300, 100)
+
+      // 4th render command - stroke text
+      ctx.strokeText('Lorem Ipsum', 300, 300)
+
+      // 5th command - draw video
+      ctx.drawImage(video, 300, 300)
       
       requestAnimationFrame(drawFrame)
     }
