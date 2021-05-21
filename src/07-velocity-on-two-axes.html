@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 - App Boilerplate</title>
+  <title>07 - Velocity on two axes</title>
 
   <style>
       
@@ -43,7 +43,7 @@
   <a id="go-back" href="/">Go Back</a>
 
   <div id="container">
-    <h1>01 - App Boilerplate</h1>
+    <h1>07 - Velocity on two axes</h1>
     <canvas id="canvas"></canvas>
   </div>
 
@@ -64,15 +64,26 @@
 
     const ctx = canvas.getContext('2d')
 
+    let posX = 0
+    let posY = 0
+    
+    let oldTime = 0
+
     requestAnimationFrame(drawFrame)
 
     // ------- Render Loop -------
     function drawFrame (ts) {
       ts /= 1000
+      const dt = ts - oldTime
+      oldTime = ts
 
-      ctx.moveTo(100, 100)
-      ctx.lineTo(200, 150)
-      ctx.stroke()
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      posX += dt * 100
+      posY += dt * 50
+
+      ctx.fillRect(posX, posY, 40, 40)
 
       requestAnimationFrame(drawFrame)
     }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 - App Boilerplate</title>
+  <title>08 - Angular Velocity</title>
 
   <style>
       
@@ -43,7 +43,7 @@
   <a id="go-back" href="/">Go Back</a>
 
   <div id="container">
-    <h1>01 - App Boilerplate</h1>
+    <h1>08 - Angular Velocity</h1>
     <canvas id="canvas"></canvas>
   </div>
 
@@ -64,15 +64,33 @@
 
     const ctx = canvas.getContext('2d')
 
+    let posX = canvas.width / 2
+    let posY = canvas.height / 2
+
+    const randomAngle = Math.random() * (Math.PI * 2)
+    
+    let oldTime = 0
+
     requestAnimationFrame(drawFrame)
 
     // ------- Render Loop -------
     function drawFrame (ts) {
       ts /= 1000
+      const dt = ts - oldTime
+      oldTime = ts
 
-      ctx.moveTo(100, 100)
-      ctx.lineTo(200, 150)
-      ctx.stroke()
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const speed = dt * 50
+
+      const velocityX = Math.cos(randomAngle) * speed
+      const velocityY = Math.sin(randomAngle) * speed
+
+      posX += velocityX
+      posY += velocityY
+
+      ctx.fillRect(posX, posY, 10, 10)
 
       requestAnimationFrame(drawFrame)
     }

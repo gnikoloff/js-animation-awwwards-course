@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06 - Rotate an object towards a point</title>
+
+  <style>
+      
+    * { margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    #go-back {
+      position: fixed;
+      top: 1em;
+      left: 1em;
+    }
+
+    #canvas {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <a id="go-back" href="/">Go Back</a>
+
+  <div id="container">
+    <h1>06 - Rotate an object towards a point</h1>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+
+    // ------- Initialization -------
+    const CANVAS_WIDTH = 512
+    const CANVAS_HEIGHT = 512
+
+    const canvas = document.getElementById('canvas')
+
+    const dpr = devicePixelRatio
+    canvas.width = CANVAS_WIDTH * devicePixelRatio
+    canvas.height = CANVAS_HEIGHT * devicePixelRatio
+
+    canvas.style.setProperty('width', CANVAS_WIDTH + 'px')
+    canvas.style.setProperty('height', CANVAS_HEIGHT + 'px')
+
+    const ctx = canvas.getContext('2d')
+
+    const mousePosition = {
+      x: 0,
+      y: 0
+    }
+
+    let angle1 = 0
+    let angle2 = 0
+
+    requestAnimationFrame(drawFrame)
+
+    canvas.addEventListener('mousemove', function (event) {
+      const mouseX = event.layerX
+      const mouseY = event.layerY
+      mousePosition.x = mouseX
+      mousePosition.y = mouseY
+    })
+
+    // ------- Render Loop -------
+    function drawFrame (ts) {
+      ts /= 1000
+
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const centerX = canvas.width / 2
+      const centerY = canvas.height / 2
+      const arrowWidth = 100
+
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'red'
+      ctx.fillStyle = 'brown'
+
+      const dx = mousePosition.x - centerX
+      const dy = mousePosition.y - centerY
+      const angle = Math.atan2(dy, dx)
+
+      ctx.save()
+
+                      ctx.translate(centerX, centerY)
+                      ctx.rotate(angle)
+
+                      ctx.beginPath()
+                      ctx.moveTo(0, 0)
+                      ctx.lineTo(0, -10)
+                      ctx.lineTo(arrowWidth / 2, -10)
+                      ctx.lineTo(arrowWidth / 2, -20)
+                      ctx.lineTo(arrowWidth, 0)
+                      ctx.lineTo(arrowWidth / 2, 20)
+                      ctx.lineTo(arrowWidth / 2, 10)
+                      ctx.lineTo(0, 10)
+                      ctx.closePath()
+                      ctx.fill()
+                      ctx.stroke()
+
+      ctx.restore()
+
+      requestAnimationFrame(drawFrame)
+    }
+
+  </script>
+  
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 - App Boilerplate</title>
+  <title>03 - Create a pulsing motion with Math.sin()</title>
 
   <style>
       
@@ -43,7 +43,7 @@
   <a id="go-back" href="/">Go Back</a>
 
   <div id="container">
-    <h1>01 - App Boilerplate</h1>
+    <h1>03 - Create a pulsing motion with Math.sin()</h1>
     <canvas id="canvas"></canvas>
   </div>
 
@@ -70,9 +70,22 @@
     function drawFrame (ts) {
       ts /= 1000
 
-      ctx.moveTo(100, 100)
-      ctx.lineTo(200, 150)
-      ctx.stroke()
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const circleX = canvas.width / 2
+      const circleY = canvas.height / 2
+      const circleRadius = 100 + Math.sin(ts * 5) * 10
+
+
+      const circleStartAngle = 0
+      const circleEndAngle = Math.PI * 2
+      const circleCounterclockwise = false
+
+      ctx.fillStyle = 'blue'
+      ctx.beginPath()
+      ctx.arc(circleX, circleY, circleRadius, circleStartAngle, circleEndAngle, circleCounterclockwise)
+      ctx.fill()
 
       requestAnimationFrame(drawFrame)
     }

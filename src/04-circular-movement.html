@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 - App Boilerplate</title>
+  <title>04 - Circular movement</title>
 
   <style>
       
@@ -43,7 +43,7 @@
   <a id="go-back" href="/">Go Back</a>
 
   <div id="container">
-    <h1>01 - App Boilerplate</h1>
+    <h1>04 - Circular movement</h1>
     <canvas id="canvas"></canvas>
   </div>
 
@@ -70,9 +70,40 @@
     function drawFrame (ts) {
       ts /= 1000
 
-      ctx.moveTo(100, 100)
-      ctx.lineTo(200, 150)
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+
+      const circleX = canvas.width / 2
+      const circleY = canvas.height / 2
+      const circleRadius = 100 + Math.sin(ts * 2) * 99
+
+      const circleStartAngle = 0
+      const circleEndAngle = Math.PI * 2
+      const circleCounterclockwise = false
+
+      ctx.fillStyle = 'blue'
+      ctx.beginPath()
+      ctx.arc(circleX, circleY, circleRadius, circleStartAngle, circleEndAngle, circleCounterclockwise)
       ctx.stroke()
+
+      ctx.fillStyle = 'orange'
+
+      const angle = ts * 2
+
+      const moveX = circleX - Math.cos(angle) * circleRadius
+      const moveY = circleY - Math.sin(angle) * circleRadius
+
+      ctx.beginPath()
+      ctx.arc(moveX, moveY, 20 + Math.cos(ts * 2) * 10, circleStartAngle, circleEndAngle, circleCounterclockwise)
+      ctx.fill()
+
+      const moveX2 = circleX - Math.cos(angle + Math.PI) * circleRadius
+      const moveY2 = circleY - Math.sin(angle + Math.PI) * circleRadius
+      ctx.fillStyle = 'blue'
+      ctx.beginPath()
+      ctx.arc(moveX2, moveY2, 30 + Math.cos(ts * 2) * 20, circleStartAngle, circleEndAngle, circleCounterclockwise)
+      ctx.fill()
 
       requestAnimationFrame(drawFrame)
     }
