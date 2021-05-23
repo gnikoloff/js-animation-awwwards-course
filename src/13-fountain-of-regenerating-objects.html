@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13 - Fountain of regenerating objects</title>
+
+  <style>
+      
+    * { margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    #go-back {
+      position: fixed;
+      top: 1em;
+      left: 1em;
+    }
+
+    #canvas {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+
+  </style>
+
+</head>
+<body>
+
+  <a id="go-back" href="/">Go Back</a>
+
+  <div id="container">
+    <h1>13 - Fountain of regenerating objects</h1>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+
+    class Rectangle {
+      constructor ({
+        x = 0,
+        y = 0,
+        width = 10,
+        height = 10,
+        velocityX = 0,
+        velocityY = 0,
+        gravity = 0,
+        color = 'black'
+      }) {
+        this.gravity = gravity
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.velocityX = velocityX
+        this.velocityY = velocityY
+        this.color = color
+      }
+
+      update (dt) {
+        this.velocityY += GRAVITY * dt
+        this.x += this.velocityX * dt
+        this.y += this.velocityY * dt
+      }
+
+      render (ctx) {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+      }
+
+    }
+
+    // ------- Initialization -------
+    const CANVAS_WIDTH = 512
+    const CANVAS_HEIGHT = 512
+
+    const canvas = document.getElementById('canvas')
+
+    const dpr = devicePixelRatio
+    canvas.width = CANVAS_WIDTH * devicePixelRatio
+    canvas.height = CANVAS_HEIGHT * devicePixelRatio
+
+    canvas.style.setProperty('width', CANVAS_WIDTH + 'px')
+    canvas.style.setProperty('height', CANVAS_HEIGHT + 'px')
+
+    const ctx = canvas.getContext('2d')
+
+    const GRAVITY = 80
+    const RECTANGLES_COUNT = 50
+    const rectangles = []
+
+    for (let i = 0; i < RECTANGLES_COUNT; i++) {
+      const radius = Math.random() * 20
+      rectangles.push(new Rectangle({
+        gravity: GRAVITY,
+        x: canvas.width / 2,
+        y: canvas.height,
+        width: radius,
+        height: radius,
+        velocityX: (Math.random() * 2 - 1) * 200,
+        velocityY: -Math.random() * 450 + 50,
+        color: getRandomRGBColor()
+      }))
+    }
+
+    let oldTime = 0
+
+    requestAnimationFrame(drawFrame)
+
+    // ------- Render Loop -------
+    function drawFrame (ts) {
+      ts /= 1000
+      const dt = ts - oldTime
+      oldTime = ts
+
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      let i = rectangles.length
+      while (i--) {
+        const rect = rectangles[i]
+        rect.update(dt)
+
+        if (rect.y > canvas.height) {
+          rect.x = canvas.width / 2
+          rect.y = canvas.height
+          rect.velocityX = (Math.random() * 2 - 1) * 200
+          rect.velocityY = -Math.random() * 450 + 50
+        }
+
+        rect.render(ctx)
+      }
+
+
+      requestAnimationFrame(drawFrame)
+    }
+
+    function getRandomRGBColor () {
+      const randomR = Math.random() * 255
+      const randomG = Math.random() * 255
+      const randomB = Math.random() * 255
+      return `rgba(${randomR}, ${randomG}, ${randomB})`
+    }
+
+  </script>
+  
+</body>
+</html>
