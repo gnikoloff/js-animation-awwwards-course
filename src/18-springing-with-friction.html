@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>18 - Springing with friction</title>
+
+  <style>
+      
+    * { margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    h5 {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-top: 1rem;
+    }
+
+    #go-back {
+      position: fixed;
+      top: 1em;
+      left: 1em;
+    }
+
+    #canvas {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+
+  </style>
+
+</head>
+<body>
+
+  <a id="go-back" href="/">Go Back</a>
+
+  <div id="container">
+    <h1>18 - Springing with friction</h1>
+    <canvas id="canvas"></canvas>
+    
+    <p>Click on the canvas to invert the springing tween</p>
+  </div>
+
+  <script>
+
+    // ------- Initialization -------
+    const CANVAS_WIDTH = 512
+    const CANVAS_HEIGHT = 512
+
+    const canvas = document.getElementById('canvas')
+
+    const dpr = devicePixelRatio
+    canvas.width = CANVAS_WIDTH * devicePixelRatio
+    canvas.height = CANVAS_HEIGHT * devicePixelRatio
+
+    canvas.style.setProperty('width', CANVAS_WIDTH + 'px')
+    canvas.style.setProperty('height', CANVAS_HEIGHT + 'px')
+
+    const ctx = canvas.getContext('2d')
+
+    let oldTime = 0
+
+    let startX = 100
+    let startY = 100
+    let startScale = 1
+
+    let endX = 400
+    let endY = 400
+    let endScale = 2
+
+    let currX = startX
+    let currY = startY
+    let currentScale = startScale
+
+    let velocityX = 0
+    let velocityY = 0
+    let velocityScale = 0
+
+    canvas.addEventListener('click', function() {
+      let tempX = startX
+      startX = endX
+      endX = tempX
+
+      let tempY = startY
+      startY = endY
+      endY = tempY
+
+      let tempScale = startScale
+      startScale = endScale
+      endScale = tempScale
+    })
+
+    requestAnimationFrame(drawFrame)
+
+    // ------- Render Loop -------
+    function drawFrame (ts) {
+      ts /= 1000
+      const dt = ts - oldTime
+      oldTime = ts
+
+      // clear our canvas contents
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+
+      ctx.strokeStyle = '#aaa'
+      ctx.fillStyle = '#888'
+
+      ctx.beginPath()
+      ctx.arc(startX, startY, 40 * startScale, 0, Math.PI * 2)
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.arc(endX, endY, 40 * endScale, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // animate our object
+      const speed = dt * 3
+
+      const accelerationX = (endX - currX) * speed
+      const accelerationY = (endY - currY) * speed
+      const accelerationScale = (endScale - currentScale) * speed
+
+      velocityX += accelerationX
+      velocityY += accelerationY
+      velocityScale += accelerationScale
+
+      const frictionFactor = 0.9
+
+      velocityX *= frictionFactor
+      velocityY *= frictionFactor
+      velocityScale *= frictionFactor
+
+      currX += velocityX
+      currY += velocityY
+      currentScale += velocityScale
+
+      ctx.fillStyle = 'orange'
+      ctx.beginPath()
+      ctx.arc(currX, currY, 40 * currentScale, 0, Math.PI * 2)
+      ctx.fill()
+
+      requestAnimationFrame(drawFrame)
+    }
+
+  </script>
+  
+</body>
+</html>

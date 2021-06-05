@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>15 - Friction</title>
+  <title>21 - Hit testing with bounding box</title>
 
   <style>
       
@@ -25,6 +25,14 @@
       margin-bottom: 1em;
     }
 
+    h5 {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-top: 1rem;
+    }
+
     #go-back {
       position: fixed;
       top: 1em;
@@ -35,6 +43,11 @@
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     }
 
+    #hint {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+    }
 
   </style>
 
@@ -44,13 +57,15 @@
   <a id="go-back" href="/">Go Back</a>
 
   <div id="container">
-    <h1>15 - Friction</h1>
+    <h1>21 - Hit testing with bounding box</h1>
     <canvas id="canvas"></canvas>
   </div>
 
+  <div id="hint"></div>
+
   <script>
 
-    class Rectangle {
+  class Rectangle {
       constructor ({
         x = 0,
         y = 0,
@@ -58,7 +73,6 @@
         height = 10,
         velocityX = 0,
         velocityY = 0,
-        friction = 1,
         gravity = 0,
         color = 'black'
       }) {
@@ -70,21 +84,17 @@
         this.velocityX = velocityX
         this.velocityY = velocityY
         this.color = color
-        this.friction = friction
       }
 
       update (dt) {
-        this.velocityX *= this.friction
-        
         this.velocityY += this.gravity * dt
-
         this.x += this.velocityX * dt
         this.y += this.velocityY * dt
       }
 
       render (ctx) {
         ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height)
       }
 
     }
@@ -94,6 +104,7 @@
     const CANVAS_HEIGHT = 512
 
     const canvas = document.getElementById('canvas')
+    const hint = document.getElementById('hint')
 
     const dpr = devicePixelRatio
     canvas.width = CANVAS_WIDTH * devicePixelRatio
@@ -104,30 +115,38 @@
 
     const ctx = canvas.getContext('2d')
 
-    const GRAVITY = 160
-    const rectangles = []
-
-    spawnRect()
-    setInterval(spawnRect, 2000)
     
+
+    const box0 = new Rectangle({
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      width: 100,
+      height: 100,
+      color: getRandomRGBColor(),
+    })
+
+    const box1 = new Rectangle({
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      width: 100,
+      height: 100,
+      color: getRandomRGBColor(),
+    })
+
+
     let oldTime = 0
 
-    requestAnimationFrame(drawFrame)
+    canvas.addEventListener('mousemove', function (event) {
+      const mouseX = event.layerX
+      const mouseY = event.layerY
+      box1.x = mouseX
+      box1.y = mouseY
 
-    function spawnRect () {
-      const rectangle = new Rectangle({
-        x: 0,
-        y: 100,
-        width: 20,
-        height: 20,
-        velocityX: Math.random() * 500 + 500,
-        velocityY: Math.random() * 200 + 200,
-        friction: 0.99,
-        gravity: GRAVITY,
-        color: getRandomRGBColor(),
-      })
-      rectangles.push(rectangle)
-    }
+      const hit = checkHitTest(box0, box1)
+      hint.textContent = hit ? 'Boxes overlap' : 'Boxes do not overlap'
+    })
+
+    requestAnimationFrame(drawFrame)
 
     // ------- Render Loop -------
     function drawFrame (ts) {
@@ -138,36 +157,10 @@
       // clear our canvas contents
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      let i = rectangles.length
-      while (i--) {
-        const rect = rectangles[i]
-        rect.update(dt)
-
-
-        checkBoundaries(rect)
-
-        rect.render(ctx)
-      }
+      box0.render(ctx)
+      box1.render(ctx)
 
       requestAnimationFrame(drawFrame)
-    }
-
-    function checkBoundaries (rect) {
-      if (rect.x > canvas.width - rect.width) {
-        rect.velocityX *= -1
-      } else if (rect.x < 0) {
-        rect.velocityX *= -1
-      }
-
-      if (rect.y > canvas.height - rect.height) {
-        rect.velocityY *= -1
-        rect.y = canvas.height - rect.height
-        rect.velocityY *= 0.5
-      } else if (rect.y < 0) {
-        rect.velocityY *= -1
-      }
-
-      
     }
 
     function getRandomRGBColor () {
@@ -175,6 +168,16 @@
       const randomG = Math.random() * 255
       const randomB = Math.random() * 255
       return `rgba(${randomR}, ${randomG}, ${randomB})`
+    }
+
+    function checkHitTest (rectA, rectB) {
+      const isHit = !(
+        rectA.x + rectA.width < rectB.x ||
+        rectB.x + rectB.width < rectA.x ||
+        rectA.y + rectA.height < rectB.y ||
+        rectB.y + rectB.height < rectA.y
+      )
+      return isHit
     }
 
   </script>
