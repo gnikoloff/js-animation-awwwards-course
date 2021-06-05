@@ -49,29 +49,28 @@
 
   <script>
 
-    // ------- Initialization -------
+    // Initialisation
     const CANVAS_WIDTH = 512
     const CANVAS_HEIGHT = 512
 
     const canvas = document.getElementById('canvas')
 
-    const dpr = devicePixelRatio
     canvas.width = CANVAS_WIDTH * devicePixelRatio
     canvas.height = CANVAS_HEIGHT * devicePixelRatio
 
-    canvas.style.setProperty('width', CANVAS_WIDTH + 'px')
-    canvas.style.setProperty('height', CANVAS_HEIGHT + 'px')
+    canvas.style.setProperty('width', `${CANVAS_WIDTH}px`)
+    canvas.style.setProperty('height', `${CANVAS_HEIGHT}px`)
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d') // Canvas2DRenderingContext
 
+    // Update loop
     requestAnimationFrame(drawFrame)
 
-    // ------- Render Loop -------
     function drawFrame (ts) {
       ts /= 1000
-
+      
       ctx.moveTo(100, 100)
-      ctx.lineTo(200, 150)
+      ctx.lineTo(200, 200)
       ctx.stroke()
 
       requestAnimationFrame(drawFrame)
