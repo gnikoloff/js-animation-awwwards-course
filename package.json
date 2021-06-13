@@ -4,7 +4,7 @@
   "description": "Example code for the Dynamic Animation with Javascript AWWWARDS course",
   "homepage": "https://www.awwwards.com/academy/course/dynamically-scripted-animations-with-javascript",
   "scripts": {
-    "start": "http-serve ./src"
+    "start": "http-server ./src"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,6 @@
     "url": "https://github.com/gnikoloff/js-animation-awwwards-course/issues"
   },
   "dependencies": {
-    "http-serve": "^1.0.1"
+    "http-server": "^0.12.3"
   }
 }
