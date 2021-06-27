@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16 - Simple Easing</title>
+
+  <style>
+      
+    * { margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    h5 {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-top: 1rem;
+    }
+
+    #go-back {
+      position: fixed;
+      top: 1em;
+      left: 1em;
+    }
+
+    #canvas {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #clock-count {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+    }
+
+    #ease-dropdown {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <a id="go-back" href="/">Go Back</a>
+
+  <div id="container">
+    <h1>16 - Simple Easing</h1>
+    <canvas id="canvas"></canvas>
+    
+    <p>Click on the canvas to invert the tween</p>
+  </div>
+
+  <select id="ease-dropdown"></select>
+
+  <div id="clock-count"></div>
+
+  <script>
+
+    // Easing class codes taken directly from
+    // https://github.com/sketchpunk/Fungi/blob/master/fungi.misc/Tween.js
+
+    // But of course, you are welcome to use any easing library you would like!
+
+    class Easing{
+      static linear(k){ return k; }
+
+      //-----------------------------------------------
+      static quad_In(k){ return k * k; }
+      static quad_Out(k){ return k * (2 - k); }
+      static quad_InOut(k) {
+        if ((k *= 2) < 1) return 0.5 * k * k;
+        return - 0.5 * (--k * (k - 2) - 1);
+      }
+
+      //-----------------------------------------------
+      static cubic_In(k){ return k * k * k; }
+      static cubic_Out(k){ return --k * k * k + 1; }
+      static cubic_InOut(k){
+        if((k *= 2) < 1) return 0.5 * k * k * k;
+        return 0.5 * ((k -= 2) * k * k + 2);
+      }
+
+      //-----------------------------------------------
+      static quart_In(k){ return k * k * k * k; }
+      static quart_Out(k){ return 1 - (--k * k * k * k); }
+      static quart_InOut(k){
+        if((k *= 2) < 1) return 0.5 * k * k * k * k;
+        return - 0.5 * ((k -= 2) * k * k * k - 2);
+      }
+
+      //-----------------------------------------------
+      static quint_In(k){ return k * k * k * k * k; }
+      static quint_Out(k){ return --k * k * k * k * k + 1; }
+      static quint_InOut(k){
+        if((k *= 2) < 1) return 0.5 * k * k * k * k * k;
+        return 0.5 * ((k -= 2) * k * k * k * k + 2);
+      }
+
+      //-----------------------------------------------
+      static sine_In(k){ return 1 - Math.cos(k * Math.PI / 2); }
+      static sine_Out(k){ return Math.sin(k * Math.PI / 2); }
+      static sine_InOut(k){ return 0.5 * (1 - Math.cos(Math.PI * k)); }
+
+      //-----------------------------------------------
+      static exp_In(k){ return k === 0 ? 0 : Math.pow(1024, k - 1); }
+      static exp_Out(k){ return k === 1 ? 1 : 1 - Math.pow(2, - 10 * k); }
+      static exp_InOut(k){
+        if (k === 0 || k === 1) return k;
+        if((k *= 2) < 1) return 0.5 * Math.pow(1024, k - 1);
+        return 0.5 * (- Math.pow(2, - 10 * (k - 1)) + 2);
+      }
+
+      //-----------------------------------------------
+      static circ_In(k){ return 1 - Math.sqrt(1 - k * k); }
+      static circ_Out(k){ return Math.sqrt(1 - (--k * k)); }
+      static circ_InOut(k){
+        if((k *= 2) < 1) return - 0.5 * (Math.sqrt(1 - k * k) - 1);
+        return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+      }
+
+      //-----------------------------------------------
+      static elastic_In(k) {
+        if (k === 0 || k === 1) return k;
+        return -Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+      }
+
+      static elastic_Out(k) {
+        if (k === 0 || k === 1) return k;
+        return Math.pow(2, -10 * k) * Math.sin((k - 0.1) * 5 * Math.PI) + 1;
+      }
+
+      static elastic_InOut(k) {
+        if (k === 0 || k === 1) return k;
+
+        k *= 2;
+        if (k < 1) return -0.5 * Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+        return 0.5 * Math.pow(2, -10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI) + 1;
+      }
+
+      //-----------------------------------------------
+      static back_In(k){ return k * k * ((1.70158 + 1) * k - 1.70158); }
+      static back_Out(k){ return --k * k * ((1.70158 + 1) * k + 1.70158) + 1; }
+      static back_InOut(k){
+        var s = 1.70158 * 1.525;
+        if((k *= 2) < 1) return 0.5 * (k * k * ((s + 1) * k - s));
+        return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+      }
+
+      //-----------------------------------------------
+      static bounce_In(k){ return 1 - Easing.bounce_Out(1 - k); }
+      static bounce_Out(k){
+        if(k < (1 / 2.75))			return 7.5625 * k * k;
+        else if(k < (2 / 2.75))		return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
+        else if(k < (2.5 / 2.75))	return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
+        else						return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
+      }
+
+      static bounce_InOut(k){
+        if(k < 0.5) return Easing.bounce_In(k * 2) * 0.5;
+        return Easing.bounce_Out(k * 2 - 1) * 0.5 + 0.5;
+      }
+
+      //-----------------------------------------------
+      //EXTRA EQUATIONS FOUND
+      static bouncy(t, jump=6, offset=1){
+        var rad = 6.283185307179586 * t; //PI_2 * t
+        return (offset + Math.sin(rad)) / 2 * Math.sin(jump * rad);
+      }
+    }
+
+    // ------- Initialization -------
+    const CANVAS_WIDTH = 512
+    const CANVAS_HEIGHT = 512
+
+    // Our tween duration
+    const TWEEN_DURATION = 2000
+
+    const canvas = document.getElementById('canvas')
+    const clockCount = document.getElementById('clock-count')
+
+    // Update duration counter in seconds
+    let startTimeAnim = new Date()
+    clockCount.textContent = `Duration: 0 sec`
+    setTimeout(updateDurationCount, 1000)
+    function updateDurationCount () {
+      const newTimeAnim = new Date()
+      const secondsElapsed = Math.round((newTimeAnim.getTime() - startTimeAnim.getTime()) / 1000)
+      clockCount.textContent = `Duration: ${secondsElapsed} sec`
+      if (secondsElapsed * 1000 < TWEEN_DURATION) {
+        setTimeout(updateDurationCount, 1000)
+      }
+    }
+
+    // Set default easing function
+    let activeEase = 'linear'
+
+    // Enumerate the Easing class and get all available easing methods
+    // and construct a select element with different options
+    const dropdownEasings = document.getElementById('ease-dropdown')
+    Object.getOwnPropertyNames(Easing)
+      .filter(name => name !== 'length' && name !== 'prototype' && name !== 'name')
+      .map(name => {
+        const option = document.createElement('option')
+        option.setAttribute('value', name)
+        option.textContent = name
+        dropdownEasings.appendChild(option)
+      })
+    // Change the active easing when value is changed in the select
+    dropdownEasings.addEventListener('change', e => {
+      activeEase = e.target.value
+    })
+
+    const dpr = devicePixelRatio
+    canvas.width = CANVAS_WIDTH * devicePixelRatio
+    canvas.height = CANVAS_HEIGHT * devicePixelRatio
+
+    canvas.style.setProperty('width', CANVAS_WIDTH + 'px')
+    canvas.style.setProperty('height', CANVAS_HEIGHT + 'px')
+
+    const ctx = canvas.getContext('2d')
+
+    // Old time is no longer needed, as we now need NOT the delta time between the current and previous frame,
+    // rather we need the delta time between the current frame and the start of the animation (duration)
+
+    // let oldTime = 0
+
+    // Initialise empty startTime variable that we will set on the first animation loop in requestAnimationFrame
+    let startTime = 0
+
+    let startX = 100
+    let startY = 100
+    let startScale = 1
+
+    let endX = 400
+    let endY = 400
+    let endScale = 2
+
+    let currX = startX
+    let currY = startY
+    let currentScale = startScale
+
+
+    canvas.addEventListener('click', function() {
+      let tempX = startX
+      startX = endX
+      endX = tempX
+
+      let tempY = startY
+      startY = endY
+      endY = tempY
+
+      let tempScale = startScale
+      startScale = endScale
+      endScale = tempScale
+
+      currX = startX
+      currY = startY
+      currentScale = startScale
+
+      startTime = 0
+      startTimeAnim = new Date()
+      clockCount.textContent = `Duration: 0 sec`
+      setTimeout(updateDurationCount, 1000)
+    })
+
+    requestAnimationFrame(drawFrame)
+
+    // ------- Render Loop -------
+    function drawFrame (ts) {
+      // On the first animation loop, save the startTime, so we can calculate how much time has elapsed
+      if (!startTime) {
+        startTime = ts
+      }
+
+      // Calculate delta elapsed between the current frame and the start of the animation
+      // It will go from 0 (start) to 1 (end) with however much duration we specified
+      // Let's clamp it to maximum of 1, so our animation does not overshoot
+      // I encourage you to remove the Math.min part and see the difference for yourself!
+      let dt = Math.min((ts - startTime) / TWEEN_DURATION, 1)
+
+      // Apply any easing you would like on the delta time elapsed since the start of the animation
+      // Here we apply the currently selected easing from the dropdown
+      dt = Easing[activeEase](dt)
+      
+
+      // clear our canvas contents
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.strokeStyle = '#aaa'
+      ctx.fillStyle = '#888'
+      ctx.beginPath()
+      ctx.arc(startX, startY, 40 * startScale, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.arc(endX, endY, 40 * endScale, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // Calculate correct x, y and scale offsets based on the time elapsed since the start of the animation
+      // Remember, dt in this case goes from 0 to 1
+      // Examples of how this formula works:
+
+      // 1. if dt = 0
+      //    currX = 200;
+      //    endX = 400;
+      //    (400 - 200) * 0
+      //    result is 0
+      //
+      //    so currX will be 200 + 0 = 200
+
+      // 2. if dt = 0.5
+      //    currX = 200
+      //    endX = 400
+      //    (400 - 200) * 0.5
+      //    result is 100
+      //
+      //    so currX will be 200 + 100 = 300
+
+      // 3. if dt = 0.99
+      //    currX = 200
+      //    endX = 400
+      //    (400 - 200) * 0.99
+      //    result is 198
+      //
+      //    so currX will be 200 + 198 = 398
+    
+
+      const x = (endX - currX) * dt
+      const y = (endY - currY) * dt
+      const scale = (endScale - currentScale) * dt
+
+      // Old code for comparison
+      // Notice how now with startTime we no longer accumulate the results back to the original currX, currY and currentScale
+
+      // const speed = dt * 3
+      // currX += (endX - currX) * speed
+      // currY += (endY - currY) * speed
+      // currentScale += (endScale - currentScale) * speed
+
+
+      ctx.fillStyle = 'orange'
+      ctx.beginPath()
+
+      // Add the dynamic x, y and scale to currX, currY and currentScale
+      // But don't accumulate them! Simple add:
+      ctx.arc(
+        currX + x,
+        currY + y,
+        40 * (scale + currentScale),
+        0,
+        Math.PI * 2
+      )
+      ctx.fill()
+
+      requestAnimationFrame(drawFrame)
+    }
+
+  </script>
+  
+</body>
+</html>
