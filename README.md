@@ -9,7 +9,7 @@ In a world full of Javascript libraries, this course will be of great use for pe
 
 ## Installation
 
-Open your favourite terminal, navigate to the folder where you want to install the project and type `git@github.com:gnikoloff/js-animation-awwwards-course.git`.
+Open your favourite terminal, navigate to the folder where you want to install the project and type `git clone git@github.com:gnikoloff/js-animation-awwwards-course.git`.
 Alternatively, click the Code button in top right of this page and click on "Download ZIP"
 
 ## Running the project
